@@ -23,7 +23,7 @@ export default function Home({ ...key }) {
     const data = key.user;
     return (
         <div className='text-center my-20'>
-            {(data === null) ? (<LoginButton />) : (<Logined />)}
+            {(data === null) ? (<LoginButton />) : (<Logined userdata={data} />)}
         </div>
     )
 }
