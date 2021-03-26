@@ -1,15 +1,29 @@
-import { Button } from "semantic-ui-react";
+import jwt from 'jsonwebtoken';
+import * as cookie from 'cookie';
+import LoginButton from "../components/LoginButton";
+import Logined from "../components/Logined";
 
-export const getServerSideProps = () => {
-
+export async function getServerSideProps(ctx) {
+    let key = null;
+    try {
+        const cookies = cookie.parse(ctx.req.headers.cookie);
+        const user = cookies.token;
+        key = jwt.verify(user, process.env.JWT_KEY)
+    } catch {
+        key = null;
+    }
+    return {
+        props: {
+            user: key
+        }
+    }
 }
 
-export default function Home() {
+export default function Home({ ...key }) {
+    const data = key.user;
     return (
         <div className='text-center my-20'>
-            <Button onClick={() => {
-                window.location.replace(`https://discord.com/api/oauth2/authorize?client_id=695899835953578025&redirect_uri=http://localhost:3000/api/callback&response_type=code&scope=identify%20email`)
-            }}>Login</Button>
+            {(data === null) ? (<LoginButton />) : (<Logined />)}
         </div>
     )
 }
